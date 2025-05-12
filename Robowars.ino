@@ -3,7 +3,7 @@ const int startPin = 2;   // JSUMO start signal pin
 const int lidarRx = 10;   // RX pin from LiDAR (TX of sensor)
 const int lidarTx = 11;   // TX pin to LiDAR (RX of sensor)
 const int linePins[4] = {A0, A1, A2, A3};  // TCRT5000 sensors (front-left, front-right, rear-left, rear-right)
-
+//peepeepoopoo
 // Motor pins (example)
 const int leftMotorPWM = 5;
 const int rightMotorPWM = 6;
