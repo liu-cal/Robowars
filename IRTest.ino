@@ -1,23 +1,29 @@
-const int linePins[4] = {A0, A1, A2, A3};  // Adjust if your pins differ
+/*
+ * IR sensors or Line sensors
+ * We will be working with the Digital Output for simplicity. A0 will be left unused
+ *
+ * Ports:
+ * Sensor VCC to Arduino 5V
+ * Sensor GND to Arduino GND
+ * Sensor D0 to Arduino D2
+ *
+ * IMPORTANT TO NOT CONNECT A0
+ */
 
-void setup() {
-  Serial.begin(9600);  // Open Serial Monitor at 9600 baud
-  for (int i = 0; i < 4; i++) {
-    pinMode(linePins[i], INPUT);
-  }
-  Serial.println("Line sensor test started...");
+#define IR_PIN 2
+
+// Constants ---
+const int IRSleepTime = 2200;
+
+void IRsetup() {
+  pinMode(IR_PIN, INPUT);
+  Serial.begin(9600);
+
+  // let the IR adjust before sending data
+  delay(IRSleepTime);
 }
 
-void loop() {
-  Serial.print("Line sensors: ");
-  for (int i = 0; i < 4; i++) {
-    int sensorValue = digitalRead(linePins[i]);
-    if (sensorValue == HIGH) {
-      Serial.print("W ");  // White surface detected
-    } else {
-      Serial.print("B ");  // Black surface detected
-    }
-  }
-  Serial.println();
-  delay(300);  // Refresh every 300 ms
+bool isWhiteLine() {
+  int sensorValue = digitalRead(IR_PIN);
+  return (sensorValue == LOW) ? true : false;
 }
