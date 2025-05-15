@@ -5,25 +5,25 @@
  * Ports:
  * Sensor VCC to Arduino 5V
  * Sensor GND to Arduino GND
- * Sensor D0 to Arduino D2
+ * Sensor D0 to Arduino D2, D3, D4, D5
  *
- * IMPORTANT TO NOT CONNECT A0
+ * IMPORTANT TO LEAVE A0 UNCONNECTED
  */
-
-#define IR_PIN 2
 
 // Constants ---
 const int IRSleepTime = 2200;
 
 void IRsetup() {
-  pinMode(IR_PIN, INPUT);
+  pinMode(FRONT_LEFT, INPUT);
+  pinMode(FRONT_RIGHT, INPUT);
+  pinMode(BACK_LEFT, INPUT);
+  pinMode(BACK_RIGHT, INPUT);
   Serial.begin(9600);
 
   // let the IR adjust before sending data
   delay(IRSleepTime);
 }
 
-bool isWhiteLine() {
-  int sensorValue = digitalRead(IR_PIN);
-  return (sensorValue == LOW) ? true : false;
+bool isWhiteLine(int pin) {
+  return (digitalRead(pin) == LOW);
 }

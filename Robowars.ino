@@ -111,18 +111,35 @@
 //   }
 //   return -1; // no valid reading
 // }
+
+
 #define LINE_CHECK_INTERVAL 100
+#define FRONT_LEFT 2
+#define FRONT_RIGHT 3
+#define BACK_LEFT 4
+#define BACK_RIGHT 5
 
 void setup() {
   IRsetup();
 }
 
 void loop() {
-  if (isWhiteLine()) {
-    // TODO make it turn according to which sensor triggered
-    Serial.println("white detected");
-  } else {
-    Serial.println("black");
+  // TODO make it turn according to which sensor triggered
+  if (isWhiteLine(FRONT_LEFT)) {
+    Serial.println("White line detected: FRONT_LEFT");
   }
+  else if (isWhiteLine(FRONT_RIGHT)) {
+    Serial.println("White line detected: FRONT_RIGHT");
+  }
+  else if (isWhiteLine(BACK_LEFT)) {
+    Serial.println("White line detected: BACK_LEFT");
+  }
+  else if (isWhiteLine(BACK_RIGHT)) {
+    Serial.println("White line detected: BACK_RIGHT");
+  }
+  else {
+    Serial.println("All sensors on black");
+  }
+
   delay(LINE_CHECK_INTERVAL);
 }

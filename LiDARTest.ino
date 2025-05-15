@@ -35,3 +35,28 @@
 //   }
 //   return -1; // No valid data
 // }
+
+// #include <AltSoftSerial.h>
+// AltSoftSerial lidarSerial; // RX = pin 8
+
+// void setup() {
+//   Serial.begin(9600);
+//   lidarSerial.begin(230400);
+// }
+
+// void loop() {
+//   int counter = 0;
+//   while (lidarSerial.available()) {
+//     int val = lidarSerial.read();
+//     Serial.print("0x");
+//     if (val < 16) Serial.print("0");
+//     Serial.print(val, HEX);
+//     Serial.print(" ");
+//     counter++;
+
+//     // Print newline every 9 bytes (you can tweak this)
+//     if (counter % 9 == 0) {
+//       Serial.println();
+//     }
+//   }
+// }
