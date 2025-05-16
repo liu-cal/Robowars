@@ -18,7 +18,14 @@ void IRsetup() {
   pinMode(FRONT_RIGHT, INPUT);
   pinMode(BACK_LEFT, INPUT);
   pinMode(BACK_RIGHT, INPUT);
+
+  // pinMode(leftMotorPWM, OUTPUT);
+  // pinMode(rightMotorPWM, OUTPUT);
+  // pinMode(leftMotorDir, OUTPUT);
+  // pinMode(rightMotorDir, OUTPUT);
+
   Serial.begin(9600);
+  Serial1.begin(9600);
 
   // let the IR adjust before sending data
   delay(IRSleepTime);
