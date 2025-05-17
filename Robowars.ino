@@ -7,7 +7,30 @@ const int rightMotorPWM = 10;
 const int leftMotorDir = 11;
 const int rightMotorDir = 12;
 
+#define LINE_CHECK_INTERVAL 700
+#define FRONT_LEFT 5
+#define FRONT_RIGHT 6
+#define BACK_LEFT 7
+#define BACK_RIGHT 8
+
 bool robotActive = false;
+bool opponentFound = false;
+
+const int IRSleepTime = 2200;
+
+void IRsetup() {
+  pinMode(FRONT_LEFT, INPUT);
+  pinMode(FRONT_RIGHT, INPUT);
+  pinMode(BACK_LEFT, INPUT);
+  pinMode(BACK_RIGHT, INPUT);
+
+  // let the IR adjust before sending data
+  delay(IRSleepTime);
+}
+
+bool isWhiteLine(int pin) {
+  return (digitalRead(pin) == LOW);
+}
 
 void setup() {
   Serial.begin(9600);
@@ -42,12 +65,13 @@ void reverseAndTurn() {
   delay(300);
 }
 
+void spinSearch() {
+  digitalWrite(leftMotorDir, HIGH);
+  digitalWrite(rightMotorDir, LOW);
+  analogWrite(leftMotorPWM, 150);
+  analogWrite(rightMotorPWM, 150);
+}
 
-#define LINE_CHECK_INTERVAL 700
-#define FRONT_LEFT 5
-#define FRONT_RIGHT 6
-#define BACK_LEFT 7
-#define BACK_RIGHT 8
 
 void loop() {
   if (!robotActive) {
@@ -61,13 +85,40 @@ void loop() {
   }
   // TODO make it turn according to which sensor triggered
 
-  int val1 = getRawValue();
-  String range1 = getDistanceApprox(val1);
-  test(val1, range1);
+  if (!opponentFound) {
+  Serial.println("Spinning to search for opponent...");
+  spinSearch();
 
-  int val2 = getMidRangeRawValue();
-  String range2 = getMidRangeDistanceApprox(val2);
-  midRangeTest(val2, range2);
+  if (isOpponent1()) {
+    Serial.println("Opponent detected by main sensor!");
+    opponentFound = true;
+    stopMotors();
+
+    // Check left sensor for 3 seconds
+    bool leftSeen = false;
+    unsigned long checkStart = millis();
+    while (millis() - checkStart < 3000) {
+      if (isOpponent2()) {
+        leftSeen = true;
+        Serial.println("Opponent detected on the left side.");
+        break;
+      }
+      delay(100); // Polling interval
+    }
+
+    if (!leftSeen) {
+      Serial.println("No opponent on left, turning right...");
+      digitalWrite(leftMotorDir, HIGH);
+      digitalWrite(rightMotorDir, LOW);
+      analogWrite(leftMotorPWM, 150);
+      analogWrite(rightMotorPWM, 150);
+      delay(5000); // Adjust time to your turning speed
+      stopMotors();
+    }
+  } else {
+    // Keep spinning
+    return;
+  }
   
   if(isWhiteLine(FRONT_LEFT)&&isWhiteLine(FRONT_RIGHT)){
     Serial.println("White line detected: FRONT_LEFT AND FRONT_RIGHT");
