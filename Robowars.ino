@@ -94,29 +94,18 @@ void spinSearch() {
   analogWrite(rightMotorPWM, 150);
 }
 
-// Example: read distance from STL-19P via UART
-int readLidar() {
-  if (Serial.available() >= 9) {
-    byte header = Serial.read();
-    if (header == 0x59) {
-      byte nextByte = Serial.read();
-      if (nextByte == 0x59) {
-        byte data[7];
-        Serial.readBytes(data, 7);
-        int distance = data[1] << 8 | data[0];
-        return distance;
-      }
-    }
-  }
-  return -1; // no valid reading
-}
 
-
-#define LINE_CHECK_INTERVAL 100
+#define LINE_CHECK_INTERVAL 700
 #define FRONT_LEFT 2
 #define FRONT_RIGHT 3
 #define BACK_LEFT 4
-#define BACK_RIGHT 5
+#define BACK_RIGHT 7
+
+// Motor pins (example)
+const int leftMotorPWM = 5;
+const int rightMotorPWM = 6;
+const int leftMotorDir = 7;
+const int rightMotorDir = 8;
 
 void setup() {
   IRsetup();
@@ -124,21 +113,116 @@ void setup() {
 
 void loop() {
   // TODO make it turn according to which sensor triggered
-  if (isWhiteLine(FRONT_LEFT)) {
+  
+  if(isWhiteLine(FRONT_LEFT)&&isWhiteLine(FRONT_RIGHT)){
+    Serial.println("White line detected: FRONT_LEFT AND FRONT_RIGHT");
+    
+    //customizable depending on motor force
+    digitalWrite(leftMotorDir, LOW);
+    digitalWrite(rightMotorDir, LOW);
+    analogWrite(leftMotorPWM, 180);
+    analogWrite(rightMotorPWM, 180);
+    delay(400);
+
+    digitalWrite(leftMotorDir, HIGH);
+    digitalWrite(rightMotorDir, LOW);
+    delay(300);
+  }
+  else if(isWhiteLine(FRONT_LEFT) && isWhiteLine(BACK_LEFT)){
+    Serial.println("White line detected: FRONT_LEFT AND BACK_LEFT");
+
+    //customizable depending on motor force
+    digitalWrite(leftMotorDir, HIGH);
+    digitalWrite(rightMotorDir, HIGH);
+    analogWrite(leftMotorPWM, 180);
+    analogWrite(rightMotorPWM, 60);
+    delay(400);
+
+    analogWrite(rightMotorPWM, 180);
+    delay(300);
+  }
+  else if(isWhiteLine(BACK_RIGHT) && isWhiteLine(BACK_LEFT)){
+    Serial.println("White line detected: BACK_LEFT AND BACK_RIGHT");
+
+    //customizable depending on motor force
+    digitalWrite(leftMotorDir, HIGH);
+    digitalWrite(rightMotorDir, HIGH);
+    analogWrite(leftMotorPWM, 180);
+    analogWrite(rightMotorPWM, 180);
+    delay(700);
+  }
+  else if(isWhiteLine(FRONT_RIGHT)&& isWhiteLine(BACK_RIGHT)){
+    Serial.println("White line detected: FRONT_RIGHT AND BACK_RIGHT");
+
+    //customizable depending on motor force
+    digitalWrite(leftMotorDir, HIGH);
+    digitalWrite(rightMotorDir, HIGH);
+    analogWrite(leftMotorPWM, 60);
+    analogWrite(rightMotorPWM, 180);
+    delay(400);
+
+    analogWrite(leftMotorPWM, 180);
+    delay(300);
+  }
+  else if (isWhiteLine(FRONT_LEFT)) {
     Serial.println("White line detected: FRONT_LEFT");
+
+    //customizable depending on motor force
+    digitalWrite(leftMotorDir, HIGH);
+    digitalWrite(rightMotorDir, HIGH);
+    analogWrite(leftMotorPWM, 180);
+    analogWrite(rightMotorPWM, 60);
+    delay(400);
+
+    analogWrite(rightMotorPWM, 180);
+    delay(300);
   }
   else if (isWhiteLine(FRONT_RIGHT)) {
     Serial.println("White line detected: FRONT_RIGHT");
+
+    //customizable depending on motor force
+    digitalWrite(leftMotorDir, HIGH);
+    digitalWrite(rightMotorDir, HIGH);
+    analogWrite(leftMotorPWM, 60);
+    analogWrite(rightMotorPWM, 180);
+    delay(400);
+
+    analogWrite(leftMotorPWM, 180);
+    delay(300);
   }
   else if (isWhiteLine(BACK_LEFT)) {
     Serial.println("White line detected: BACK_LEFT");
+
+    //customizable depending on motor force
+    digitalWrite(leftMotorDir, HIGH);
+    digitalWrite(rightMotorDir, HIGH);
+    analogWrite(leftMotorPWM, 180);
+    analogWrite(rightMotorPWM, 60);
+    delay(400);
+
+    analogWrite(rightMotorPWM, 180);
+    delay(300);
   }
   else if (isWhiteLine(BACK_RIGHT)) {
     Serial.println("White line detected: BACK_RIGHT");
+
+    //customizable depending on motor force
+    digitalWrite(leftMotorDir, HIGH);
+    digitalWrite(rightMotorDir, HIGH);
+    analogWrite(leftMotorPWM, 60);
+    analogWrite(rightMotorPWM, 180);
+    delay(400);
+
+    analogWrite(leftMotorPWM, 180);
+    delay(300);
   }
   else {
-    Serial.println("All sensors on black");
+    Serial.println("All sensors on black or on white");
   }
 
   delay(LINE_CHECK_INTERVAL);
+
+  int distance = readLidar();  // returns distance in cm
+
+  Serial.println(distance);
 }
