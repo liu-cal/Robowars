@@ -1,8 +1,6 @@
 // --- Pin Definitions ---
 const int startPin = 2;   // JSUMO start signal pin
-const int lidarRx = 10;   // RX pin from LiDAR (TX of sensor)
-const int lidarTx = 11;   // TX pin to LiDAR (RX of sensor)
-const int linePins[4] = {A0, A1, A2, A3};  // TCRT5000 sensors (front-left, front-right, rear-left, rear-right)
+//const int linePins[4] = {A0, A1, A2, A3};  // TCRT5000 sensors (front-left, front-right, rear-left, rear-right)
 // Motor pins (example)
 const int leftMotorPWM = 5;
 const int rightMotorPWM = 6;
@@ -12,10 +10,9 @@ const int rightMotorDir = 8;
 bool robotActive = false;
 
 void setup() {
-  Serial.begin(115200);  // for LiDAR
+  Serial.begin(9600);
+  IRsetup();
   pinMode(startPin, INPUT);
-
-  for (int i = 0; i < 4; i++) pinMode(linePins[i], INPUT);
 
   pinMode(leftMotorPWM, OUTPUT);
   pinMode(rightMotorPWM, OUTPUT);
@@ -50,14 +47,6 @@ void loop() {
     return;
   }
 
-  // --- LiDAR Tracking Logic ---
-  int distance = readLidar();  // returns distance in cm
-
-  if (distance > 0 && distance < 100) {
-    moveForward();
-  } else {
-    spinSearch();  // rotate to find opponent
-  }
 }
 
 // --- Helper Functions ---
@@ -101,17 +90,7 @@ void spinSearch() {
 #define BACK_LEFT 4
 #define BACK_RIGHT 7
 
-// Motor pins (example)
-const int leftMotorPWM = 5;
-const int rightMotorPWM = 6;
-const int leftMotorDir = 7;
-const int rightMotorDir = 8;
-
-void setup() {
-  IRsetup();
-}
-
-void loop() {
+void aloop() {
   // TODO make it turn according to which sensor triggered
   
   if(isWhiteLine(FRONT_LEFT)&&isWhiteLine(FRONT_RIGHT)){
