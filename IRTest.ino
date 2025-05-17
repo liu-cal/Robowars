@@ -10,7 +10,7 @@
  * IMPORTANT TO LEAVE A0 UNCONNECTED
  */
 
-// Constants ---
+//Constants ---
 const int IRSleepTime = 2200;
 
 void IRsetup() {

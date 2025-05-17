@@ -1,62 +1,42 @@
-// #include <SoftwareSerial.h>
+/*
+ * GP2Y0A02YK sensor (20cm - 150cm)
+ * Main sensor to search for the opponent. 
+ * Wide range, less accurate and falls off under 20cm
+ *
+ * Ports:
+ * Sensor VCC (red) to Arduino 5V
+ * Sensor GND (black) to Arduino GND
+ * Sensor Output Voltage (yellow) to Arduino A0 (Analog In)
+ *
+ */
 
-// // Create a software serial port on D10 (RX) and D11 (TX)
-// SoftwareSerial lidarSerial(10, 11);  // RX, TX
 
-// void setup() {
-//   Serial.begin(9600);          // Serial Monitor
-//   lidarSerial.begin(115200);   // LiDAR's UART baud rate
+const int straightLine1Pin = A0;
 
-//   Serial.println("STL-19P LiDAR Test Starting...");
-// }
+void straightLine1setup() {}
 
-// void loop() {
-//   int distance = readLidar();
-//   if (distance > 0) {
-//     Serial.print("Distance: ");
-//     Serial.print(distance);
-//     Serial.println(" cm");
-//   }
-//   delay(100);  // Optional: reduce CPU usage
-// }
+void test(int rawValue, String range) {
+  Serial.print("Raw:");
+  Serial.print(rawValue);
+  Serial.print("  ");
+  Serial.print(range);
+  Serial.println();
+}
 
-// int readLidar() {
-//   if (lidarSerial.available() >= 9) {
-//     byte header = lidarSerial.read();
-//     if (header == 0x59) {
-//       byte nextByte = lidarSerial.read();
-//       if (nextByte == 0x59) {
-//         byte data[7];
-//         lidarSerial.readBytes(data, 7);
-//         int distance = data[1] << 8 | data[0];
-//         return distance;
-//       }
-//     }
-//   }
-//   return -1; // No valid data
-// }
+int getRawValue() {
+  return analogRead(straightLine1Pin);
+}
 
-// #include <AltSoftSerial.h>
-// AltSoftSerial lidarSerial; // RX = pin 8
-
-// void setup() {
-//   Serial.begin(9600);
-//   lidarSerial.begin(230400);
-// }
-
-// void loop() {
-//   int counter = 0;
-//   while (lidarSerial.available()) {
-//     int val = lidarSerial.read();
-//     Serial.print("0x");
-//     if (val < 16) Serial.print("0");
-//     Serial.print(val, HEX);
-//     Serial.print(" ");
-//     counter++;
-
-//     // Print newline every 9 bytes (you can tweak this)
-//     if (counter % 9 == 0) {
-//       Serial.println();
-//     }
-//   }
-// }
+String getDistanceApprox(int input) {
+  if (input > 500) return "under 20";
+  else if (input > 370) return "under 30"; // increments by 15
+  else if (input > 250) return "under 45";
+  else if (input > 195) return "under 60";
+  else if (input > 150) return "under 75";
+  else if (input > 120) return "under 90";
+  else if (input > 100) return "under 105";
+  else if (input > 90) return "under 120";
+  else if (input > 80) return "under 135";
+  else if (input > 65) return "around 150";
+  else return "nothing";
+}
