@@ -2,10 +2,10 @@
 const int startPin = 2;   // JSUMO start signal pin
 //const int linePins[4] = {A0, A1, A2, A3};  // TCRT5000 sensors (front-left, front-right, rear-left, rear-right)
 // Motor pins (example)
-const int leftMotorPWM = 5;
-const int rightMotorPWM = 6;
-const int leftMotorDir = 7;
-const int rightMotorDir = 8;
+const int leftMotorPWM = 9;
+const int rightMotorPWM = 10;
+const int leftMotorDir = 11;
+const int rightMotorDir = 12;
 
 bool robotActive = false;
 
@@ -22,44 +22,10 @@ void setup() {
   stopMotors();  // ensure safe startup
 }
 
-void loop() {
-  if (!robotActive) {
-    if (digitalRead(startPin) == HIGH) {
-      robotActive = true;
-      delay(1000);  // Optional startup delay
-    } else {
-      stopMotors();
-      return;
-    }
-  }
-
-  // --- Line Sensor Check ---
-  bool nearEdge = false;
-  for (int i = 0; i < 4; i++) {
-    if (digitalRead(linePins[i]) == HIGH) { // white detected
-      nearEdge = true;
-      break;
-    }
-  }
-
-  if (nearEdge) {
-    reverseAndTurn();
-    return;
-  }
-
-}
-
 // --- Helper Functions ---
 void stopMotors() {
   analogWrite(leftMotorPWM, 0);
   analogWrite(rightMotorPWM, 0);
-}
-
-void moveForward() {
-  digitalWrite(leftMotorDir, HIGH);
-  digitalWrite(rightMotorDir, HIGH);
-  analogWrite(leftMotorPWM, 180);
-  analogWrite(rightMotorPWM, 180);
 }
 
 void reverseAndTurn() {
@@ -76,22 +42,32 @@ void reverseAndTurn() {
   delay(300);
 }
 
-void spinSearch() {
-  digitalWrite(leftMotorDir, HIGH);
-  digitalWrite(rightMotorDir, LOW);
-  analogWrite(leftMotorPWM, 150);
-  analogWrite(rightMotorPWM, 150);
-}
-
 
 #define LINE_CHECK_INTERVAL 700
-#define FRONT_LEFT 2
-#define FRONT_RIGHT 3
-#define BACK_LEFT 4
-#define BACK_RIGHT 7
+#define FRONT_LEFT 5
+#define FRONT_RIGHT 6
+#define BACK_LEFT 7
+#define BACK_RIGHT 8
 
-void aloop() {
+void loop() {
+  if (!robotActive) {
+    if (digitalRead(startPin) == HIGH) {
+      robotActive = true;
+      delay(1000);  // Optional startup delay
+    } else {
+      stopMotors();
+      return;
+    }
+  }
   // TODO make it turn according to which sensor triggered
+
+  int val1 = getRawValue();
+  String range1 = getDistanceApprox(val1);
+  test(val1, range1);
+
+  int val2 = getMidRangeRawValue();
+  String range2 = getMidRangeDistanceApprox(val2);
+  midRangeTest(val2, range2);
   
   if(isWhiteLine(FRONT_LEFT)&&isWhiteLine(FRONT_RIGHT)){
     Serial.println("White line detected: FRONT_LEFT AND FRONT_RIGHT");
@@ -200,8 +176,4 @@ void aloop() {
   }
 
   delay(LINE_CHECK_INTERVAL);
-
-  int distance = readLidar();  // returns distance in cm
-
-  Serial.println(distance);
 }

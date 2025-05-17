@@ -19,8 +19,6 @@ void IRsetup() {
   pinMode(BACK_LEFT, INPUT);
   pinMode(BACK_RIGHT, INPUT);
 
-  Serial1.begin(9600);
-
   // let the IR adjust before sending data
   delay(IRSleepTime);
 }
