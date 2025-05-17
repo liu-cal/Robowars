@@ -1,28 +1,28 @@
-/*
- * IR sensors or Line sensors
- * We will be working with the Digital Output for simplicity. A0 will be left unused
- *
- * Ports:
- * Sensor VCC to Arduino 5V
- * Sensor GND to Arduino GND
- * Sensor D0 to Arduino D2, D3, D4, D5
- *
- * IMPORTANT TO LEAVE A0 UNCONNECTED
- */
+// /*
+//  * IR sensors or Line sensors
+//  * We will be working with the Digital Output for simplicity. A0 will be left unused
+//  *
+//  * Ports:
+//  * Sensor VCC to Arduino 5V
+//  * Sensor GND to Arduino GND
+//  * Sensor D0 to Arduino D2, D3, D4, D5
+//  *
+//  * IMPORTANT TO LEAVE A0 UNCONNECTED
+//  */
 
-//Constants ---
-const int IRSleepTime = 2200;
+// //Constants ---
+// const int IRSleepTime = 2200;
 
-void IRsetup() {
-  pinMode(FRONT_LEFT, INPUT);
-  pinMode(FRONT_RIGHT, INPUT);
-  pinMode(BACK_LEFT, INPUT);
-  pinMode(BACK_RIGHT, INPUT);
+// void IRsetup() {
+//   pinMode(FRONT_LEFT, INPUT);
+//   pinMode(FRONT_RIGHT, INPUT);
+//   pinMode(BACK_LEFT, INPUT);
+//   pinMode(BACK_RIGHT, INPUT);
 
-  // let the IR adjust before sending data
-  delay(IRSleepTime);
-}
+//   // let the IR adjust before sending data
+//   delay(IRSleepTime);
+// }
 
-bool isWhiteLine(int pin) {
-  return (digitalRead(pin) == LOW);
-}
+// bool isWhiteLine(int pin) {
+//   return (digitalRead(pin) == LOW);
+// }
